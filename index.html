@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#12161c">
+    <title>Metal Stress — Bend the Strip. It Remembers.</title>
+    <meta name="description" content="Metal Stress is a free casual puzzle for iPhone and iPad. Tap a mounted metal strip, keep a fraction of each bend, and match the amber angle guide before fatigue cracks the joint.">
+    <style>
+        :root {
+            --shop: #12161c;
+            --shop-2: #1a212b;
+            --plate: #232b36;
+            --steel: #e4e8ee;
+            --steel-dim: #a7b1bd;
+            --ink: #12161c;
+            --amber: #f08a24;
+            --amber-hot: #ffb15a;
+            --copper: #e08a72;
+            --hud: #2c3646;
+            --line: rgba(240, 138, 36, 0.42);
+            --shadow: 0 28px 50px rgba(0, 0, 0, 0.45);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+            color: var(--steel);
+            background: var(--shop);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 55% 42% at 82% 0%, rgba(240, 138, 36, 0.16), transparent 58%),
+                radial-gradient(ellipse 40% 30% at 0% 100%, rgba(224, 138, 114, 0.08), transparent 50%),
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(255, 255, 255, 0.015) 0 1px,
+                    transparent 1px 7px
+                );
+        }
+
+        a { color: inherit; }
+
+        a:focus-visible, .btn:focus-visible {
+            outline: 2px solid var(--amber-hot);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 26px 22px 76px;
+        }
+
+        .mast {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding-bottom: 16px;
+            margin-bottom: 34px;
+            border-bottom: 1px solid rgba(167, 177, 189, 0.22);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .mark { width: 48px; height: 48px; flex: none; }
+
+        .brand strong {
+            display: block;
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-weight: 700;
+            font-size: 1.45rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .mast nav {
+            display: flex;
+            gap: 22px;
+            font-size: 0.92rem;
+            font-weight: 650;
+        }
+
+        .mast nav a { text-decoration: none; color: var(--steel-dim); }
+        .mast nav a:hover { color: var(--amber-hot); }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .kicker {
+            font-size: 0.72rem;
+            font-weight: 750;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-weight: 750;
+            font-size: clamp(2.8rem, 6.4vw, 5rem);
+            line-height: 0.9;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        h1 span {
+            display: block;
+            color: var(--amber-hot);
+        }
+
+        .lede {
+            color: var(--steel-dim);
+            font-size: 1.08rem;
+            line-height: 1.65;
+            max-width: 38rem;
+            margin-bottom: 18px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tags span {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(240, 138, 36, 0.45);
+            background: rgba(240, 138, 36, 0.08);
+            padding: 6px 10px;
+            color: var(--amber-hot);
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 750;
+            letter-spacing: 0.03em;
+            padding: 14px 18px;
+            transition: transform 0.16s ease;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-amber {
+            background: linear-gradient(180deg, var(--amber-hot), var(--amber));
+            color: var(--ink);
+        }
+
+        .btn-line {
+            border: 1px solid var(--amber);
+            color: var(--amber-hot);
+            background: transparent;
+        }
+
+        .bench {
+            position: relative;
+            min-height: 460px;
+            padding: 16px 16px 18px;
+            background:
+                linear-gradient(180deg, rgba(255, 214, 150, 0.18), transparent 42%),
+                repeating-linear-gradient(
+                    90deg,
+                    #6d4b32 0 46px,
+                    #5c3e29 46px 48px,
+                    #7a5638 48px 92px
+                );
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .beam {
+            position: relative;
+            z-index: 1;
+            height: 16px;
+            margin: 4px 8% 12px;
+            background: linear-gradient(180deg, #8a6242, #3d291b);
+            box-shadow: 0 7px 0 #2a1b12;
+        }
+
+        .hud {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .hud span, .tap-pill {
+            background: var(--hud);
+            color: var(--steel);
+            font-size: 0.72rem;
+            font-weight: 750;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 8px 10px;
+        }
+
+        .stage-svg {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: min(100%, 340px);
+            margin: 8px auto 0;
+        }
+
+        .arm {
+            transform-origin: 160px 118px;
+            animation: flexset 3.4s ease-in-out infinite;
+        }
+
+        @keyframes flexset {
+            0% { transform: rotate(0deg); }
+            32% { transform: rotate(46deg); }
+            58% { transform: rotate(16deg); }
+            100% { transform: rotate(16deg); }
+        }
+
+        .bench figcaption {
+            position: relative;
+            z-index: 1;
+            margin-top: 28px;
+            text-align: center;
+            font-size: 0.86rem;
+            color: #f3e6d4;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+        }
+
+        .tap-pill {
+            position: relative;
+            z-index: 1;
+            display: table;
+            margin: 0 auto;
+        }
+
+        .steps {
+            margin-top: 54px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .steps article {
+            background: var(--shop-2);
+            border-top: 3px solid var(--amber);
+            padding: 22px 18px 24px;
+        }
+
+        .steps article:nth-child(2) { border-top-color: var(--steel); }
+        .steps article:nth-child(3) { border-top-color: var(--copper); }
+
+        .steps span {
+            font-size: 0.68rem;
+            font-weight: 750;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .steps h2, .memory h2, .spec h2 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-weight: 750;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .steps h2 {
+            font-size: 1.55rem;
+            margin: 8px 0;
+        }
+
+        .steps p { color: var(--steel-dim); line-height: 1.55; }
+
+        .memory { margin-top: 62px; }
+
+        .memory h2, .spec h2 {
+            font-size: clamp(2rem, 4vw, 3.1rem);
+            line-height: 0.95;
+        }
+
+        .intro {
+            max-width: 40rem;
+            margin-top: 12px;
+            color: var(--steel-dim);
+            line-height: 1.65;
+            font-size: 1.05rem;
+        }
+
+        .grid-2 {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 14px;
+        }
+
+        .grid-2 ol { list-style: none; display: grid; gap: 10px; }
+
+        .grid-2 li {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            background: var(--shop-2);
+            padding: 16px;
+            border-left: 3px solid var(--amber);
+        }
+
+        .grid-2 b {
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--amber-hot);
+        }
+
+        .grid-2 h3 { font-size: 1.05rem; margin: 2px 0 4px; }
+        .grid-2 li p { color: var(--steel-dim); line-height: 1.5; font-size: 0.96rem; }
+
+        .fatigue {
+            background: linear-gradient(180deg, #3a241c, #241810);
+            border: 1px solid rgba(224, 138, 114, 0.45);
+            padding: 22px;
+        }
+
+        .fatigue h3 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-size: 1.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: var(--copper);
+            margin-bottom: 8px;
+        }
+
+        .fatigue p { color: #f0d2c8; line-height: 1.6; }
+
+        .spec { margin-top: 62px; }
+
+        .sheet, .plate {
+            padding: 22px;
+        }
+
+        .sheet {
+            background: #ece7e1;
+            color: var(--ink);
+        }
+
+        .sheet h3, .plate h3 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-size: 1.6rem;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .sheet p { color: #3c342c; line-height: 1.6; }
+        .plate p { color: var(--steel-dim); line-height: 1.6; }
+
+        .sheet ul {
+            list-style: none;
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .sheet li {
+            background: #f7f3ee;
+            padding: 12px 14px;
+            line-height: 1.5;
+        }
+
+        .sheet li strong { display: block; }
+
+        .plate {
+            background: var(--plate);
+            border: 1px solid var(--line);
+        }
+
+        .plate dl {
+            margin-top: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .plate div {
+            border-bottom: 1px solid rgba(240, 138, 36, 0.28);
+            padding-bottom: 8px;
+        }
+
+        .plate dt {
+            font-size: 0.65rem;
+            font-weight: 750;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 3px;
+        }
+
+        .plate dd { font-weight: 700; }
+
+        .closer {
+            margin-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+            padding: 22px;
+            background:
+                linear-gradient(100deg, rgba(240, 138, 36, 0.22), rgba(26, 33, 43, 0.2)),
+                var(--shop-2);
+            border: 1px solid var(--line);
+        }
+
+        .closer p { max-width: 40rem; color: var(--steel-dim); line-height: 1.6; }
+
+        footer {
+            margin-top: 28px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.82rem;
+            color: var(--steel-dim);
+        }
+
+        footer a { color: var(--amber-hot); font-weight: 750; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 860px) {
+            .hero, .steps, .grid-2 { grid-template-columns: 1fr; }
+            .mast { align-items: flex-start; flex-wrap: wrap; }
+            .mast nav { width: 100%; flex-wrap: wrap; }
+            .actions { flex-direction: column; align-items: stretch; }
+            .actions .btn, .closer .btn { width: 100%; }
+            .bench { min-height: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .arm { animation: none; transform: rotate(22deg); }
+            .btn:hover { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header class="mast">
+            <a class="brand" href="index.html">
+                <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+                    <rect width="48" height="48" fill="#1a212b"/>
+                    <path d="M18 8h6v16l10 14h-7l-9-13V8z" fill="#d5dbe2"/>
+                    <path d="M24 24l10 14" fill="none" stroke="#f08a24" stroke-width="2"/>
+                    <path d="M16 40h8" stroke="#ffb15a" stroke-width="2"/>
+                </svg>
+                <span>
+                    <strong>Metal Stress</strong>
+                    <small>Shape-memory workshop</small>
+                </span>
+            </a>
+            <nav>
+                <a href="#bend">How to bend</a>
+                <a href="#phases">The phases</a>
+                <a href="privacy.html">Privacy</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div>
+                    <p class="kicker">Casual puzzle · Free · Designed for iPad</p>
+                    <h1>Every tap<span>leaves a mark.</span></h1>
+                    <p class="lede">
+                        Metal Stress is a material-bending puzzle for iPhone and iPad. A thin strip is mounted in a workshop. Tap it and it flexes, then springs back holding a fraction of that bend — the metal remembers. Repeat taps on the same point to build the angle, chain several points for a sharper zigzag, and land inside the amber guide with as few taps as you can. Waiting does not undo a bend.
+                    </p>
+                    <div class="tags">
+                        <span>Permanent deformation</span>
+                        <span>Amber angle guides</span>
+                        <span>Fatigue cracks</span>
+                        <span>Lives on the line</span>
+                        <span>Age 4+</span>
+                        <span>Contains advertising</span>
+                    </div>
+                    <div class="actions">
+                        <a class="btn btn-amber" href="https://apps.apple.com/us/app/metal-stress/id6814805087?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+                        <a class="btn btn-line" href="privacy.html">Privacy sheet</a>
+                    </div>
+                </div>
+                <figure class="bench">
+                    <div class="hud">
+                        <span>Lives 3/3</span>
+                        <span>Level 01</span>
+                    </div>
+                    <svg class="stage-svg" viewBox="0 0 320 300" role="img" aria-label="A silver strip flexes toward an orange target line, then sets at a smaller angle">
+                        <polygon points="250,8 196,8 150,250 210,250" fill="rgba(255, 220, 160, 0.18)"/>
+                        <path d="M214 18 L168 250" fill="none" stroke="#f08a24" stroke-width="3"/>
+                        <path d="M96 150 L168 196" fill="none" stroke="#f08a24" stroke-width="3"/>
+                        <rect x="148" y="28" width="24" height="92" fill="#d7dde4"/>
+                        <g class="arm">
+                            <rect x="148" y="116" width="24" height="118" fill="url(#heat)"/>
+                        </g>
+                        <circle cx="160" cy="118" r="4" fill="#2c3646"/>
+                        <circle cx="160" cy="232" r="4" fill="#ffb15a"/>
+                        <defs>
+                            <linearGradient id="heat" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#e7edf2"/>
+                                <stop offset="1" stop-color="#e08a72"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <div class="beam" aria-hidden="true"></div>
+                    <div class="tap-pill" aria-hidden="true">Taps 4/6</div>
+                    <figcaption>Sample opening bench. Orange lines are the target. The strip keeps only part of the flex.</figcaption>
+                </figure>
+            </section>
+
+            <section class="steps" id="bend" aria-label="How a bend works">
+                <article>
+                    <span>01 · Read</span>
+                    <h2>Check the guide</h2>
+                    <p>Orange lines show the angle you are aiming for. Read that guide before you commit. The first tap already starts a bend you cannot wait away.</p>
+                </article>
+                <article>
+                    <span>02 · Set</span>
+                    <h2>Flex, then remember</h2>
+                    <p>Each tap is a two-stage motion: the strip flexes, springs back, and holds a fraction of the bend. More taps on the same point build toward the required angle.</p>
+                </article>
+                <article>
+                    <span>03 · Limit</span>
+                    <h2>Watch fatigue</h2>
+                    <p>Later strips carry a safe tap count. Push a joint past that limit and it cracks, costing a life. Overshoot means working around the set, not taking it back.</p>
+                </article>
+            </section>
+
+            <section class="memory" id="phases">
+                <h2>One strip. Then a harder shop.</h2>
+                <p class="intro">The workshop starts with a single mounted strip and a readable target. Later phases add more bend points, more strips, and a tighter tolerance around the amber guide.</p>
+                <div class="grid-2">
+                    <ol>
+                        <li>
+                            <b>Point</b>
+                            <div>
+                                <h3>Build one angle</h3>
+                                <p>Taps in the same spot stack permanent deformation in that direction. The metal never returns all the way to straight.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <b>Chain</b>
+                            <div>
+                                <h3>Zigzag the strip</h3>
+                                <p>Several bend points along one strip make sharper shapes. Each point still sets on its own and still remembers.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <b>Phase</b>
+                            <div>
+                                <h3>More metal, less room</h3>
+                                <p>Further on, layouts use more than one strip, and the window that counts as a match gets narrower. Fewer taps is the better solve.</p>
+                            </div>
+                        </li>
+                    </ol>
+                    <aside class="fatigue">
+                        <h3>A crack spends a life</h3>
+                        <p>The bench shows a life count beside the level. Fatigue is not a hint you can ignore: a joint pushed past its safe taps cracks, and that crack costs a life. Plan the sequence, then tap.</p>
+                    </aside>
+                </div>
+            </section>
+
+            <section class="spec" id="devices">
+                <h2>A workshop on the device.</h2>
+                <p class="intro">The App Store lists Metal Stress as a free English casual puzzle, designed for iPad, rated 4+, and marked as containing advertising.</p>
+                <div class="grid-2">
+                    <article class="sheet">
+                        <h3>What the bench asks</h3>
+                        <p>No account is described on the store listing. You read the guide, tap the strip, and live with the set.</p>
+                        <ul>
+                            <li>
+                                <strong>Shape memory</strong>
+                                The spring-back keeps a fraction of every flex. The rest of the bend is already in the metal.
+                            </li>
+                            <li>
+                                <strong>No undo by waiting</strong>
+                                Time does not straighten a joint. An overshoot has to be worked around.
+                            </li>
+                            <li>
+                                <strong>Tap economy</strong>
+                                Matching the guide in fewer taps is the cleaner solve, before fatigue has a chance to crack the joint.
+                            </li>
+                            <li>
+                                <strong>Free, with ads</strong>
+                                The listing says the game contains advertising. The privacy sheet covers the data label.
+                            </li>
+                        </ul>
+                    </article>
+                    <article class="plate">
+                        <h3>On the App Store</h3>
+                        <p>Designed for iPad. Requires iOS 15 or later. The Mac build requires Apple silicon and macOS 12 or later, and is marked not verified for macOS. Apple Vision requires visionOS 1 or later.</p>
+                        <dl>
+                            <div>
+                                <dt>Category</dt>
+                                <dd>Casual puzzle</dd>
+                            </div>
+                            <div>
+                                <dt>Price</dt>
+                                <dd>Free</dd>
+                            </div>
+                            <div>
+                                <dt>Size</dt>
+                                <dd>118.2 MB</dd>
+                            </div>
+                            <div>
+                                <dt>Language</dt>
+                                <dd>English</dd>
+                            </div>
+                            <div>
+                                <dt>Age</dt>
+                                <dd>4+</dd>
+                            </div>
+                            <div>
+                                <dt>System</dt>
+                                <dd>iOS 15+</dd>
+                            </div>
+                        </dl>
+                    </article>
+                </div>
+            </section>
+
+            <section class="closer">
+                <p><strong>Support stays on the product page.</strong> Questions about Metal Stress, including privacy, go through the options on its App Store listing.</p>
+                <a class="btn btn-amber" href="https://apps.apple.com/us/app/metal-stress/id6814805087?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2026 Metal Stress. A casual bending puzzle for iPhone and iPad.</p>
+            <p><a href="privacy.html">Privacy</a> · <a href="https://apps.apple.com/us/app/metal-stress/id6814805087?uo=4" target="_blank" rel="noopener noreferrer">App Store</a></p>
+        </footer>
+    </div>
+</body>
+</html>

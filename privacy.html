@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#12161c">
+    <title>Data Sheet — Metal Stress</title>
+    <meta name="description" content="Data sheet for Metal Stress. The App Store label lists usage data used to track you, and usage data plus advertising data linked to you for third-party advertising.">
+    <style>
+        :root {
+            --shop: #12161c;
+            --shop-2: #1a212b;
+            --plate: #232b36;
+            --steel: #e4e8ee;
+            --steel-dim: #a7b1bd;
+            --ink: #12161c;
+            --amber: #f08a24;
+            --amber-hot: #ffb15a;
+            --copper: #e08a72;
+            --hud: #2c3646;
+            --line: rgba(240, 138, 36, 0.42);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif;
+            color: var(--steel);
+            background: var(--shop);
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse 50% 32% at 100% 0%, rgba(240, 138, 36, 0.14), transparent 55%),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.02) 0 1px,
+                    transparent 1px 22px
+                );
+        }
+
+        a:focus-visible, .btn:focus-visible {
+            outline: 2px solid var(--amber-hot);
+            outline-offset: 3px;
+        }
+
+        .wrap {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 26px 22px 72px;
+        }
+
+        .mast {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding-bottom: 16px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid rgba(167, 177, 189, 0.22);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .mark { width: 48px; height: 48px; flex: none; }
+
+        .brand strong {
+            display: block;
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-weight: 700;
+            font-size: 1.45rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .brand small {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--amber);
+        }
+
+        .mast nav {
+            display: flex;
+            gap: 22px;
+            font-size: 0.92rem;
+            font-weight: 650;
+        }
+
+        .mast nav a { color: var(--steel-dim); text-decoration: none; }
+        .mast nav a:hover, .mast nav a[aria-current="page"] { color: var(--amber-hot); }
+
+        .readout {
+            background:
+                linear-gradient(180deg, rgba(255, 177, 90, 0.08), transparent 40%),
+                var(--shop-2);
+            border: 1px solid var(--line);
+            padding: 28px 26px 22px;
+        }
+
+        .stamp {
+            font-size: 0.7rem;
+            font-weight: 750;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 750;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            line-height: 0.95;
+            margin-bottom: 12px;
+        }
+
+        .deck {
+            max-width: 44rem;
+            color: var(--steel-dim);
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .gauges {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .gauges div {
+            background: var(--hud);
+            padding: 12px 14px;
+            border-left: 3px solid var(--amber);
+        }
+
+        .gauges dt {
+            font-size: 0.65rem;
+            font-weight: 750;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--amber-hot);
+            margin-bottom: 4px;
+        }
+
+        .gauges dd { font-size: 0.98rem; line-height: 1.4; }
+
+        .issued {
+            margin-top: 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--steel-dim);
+        }
+
+        .bay {
+            margin-top: 22px;
+            display: grid;
+            grid-template-columns: 210px 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .stations {
+            position: sticky;
+            top: 16px;
+            display: grid;
+            gap: 6px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .stations a {
+            color: var(--steel-dim);
+            text-decoration: none;
+            padding: 8px 10px;
+            background: rgba(26, 33, 43, 0.85);
+            border-left: 2px solid transparent;
+        }
+
+        .stations a:hover {
+            color: var(--amber-hot);
+            border-left-color: var(--amber);
+        }
+
+        .plate {
+            background: var(--plate);
+            border: 1px solid rgba(167, 177, 189, 0.16);
+            padding: 20px 20px 18px;
+            margin-bottom: 12px;
+        }
+
+        .plate .code {
+            font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: var(--copper);
+        }
+
+        .plate h2 {
+            font-family: "Avenir Next Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+            font-size: 1.45rem;
+            font-weight: 750;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin: 4px 0 10px;
+        }
+
+        .plate p, .plate li {
+            color: var(--steel-dim);
+            line-height: 1.65;
+            font-size: 1rem;
+        }
+
+        .plate p + p { margin-top: 10px; }
+
+        .plate ul { margin: 10px 0 0 1.1rem; }
+        .plate li + li { margin-top: 6px; }
+
+        .plate a { color: var(--amber-hot); }
+
+        .warn {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: rgba(224, 138, 114, 0.12);
+            border-left: 3px solid var(--copper);
+            color: var(--steel);
+            line-height: 1.55;
+        }
+
+        .spec {
+            margin-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .spec div {
+            background: var(--shop);
+            padding: 10px 12px;
+        }
+
+        .spec dt {
+            font-size: 0.64rem;
+            font-weight: 750;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 3px;
+        }
+
+        .spec dd { font-weight: 700; color: var(--steel); }
+
+        .endcap {
+            margin-top: 6px;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            border: 1px solid var(--line);
+            background: var(--shop-2);
+        }
+
+        .endcap p {
+            max-width: 36rem;
+            color: var(--steel-dim);
+            line-height: 1.55;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 750;
+            padding: 12px 16px;
+            background: linear-gradient(180deg, var(--amber-hot), var(--amber));
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        footer {
+            margin-top: 22px;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 0.82rem;
+            color: var(--steel-dim);
+        }
+
+        footer a { color: var(--amber-hot); font-weight: 750; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 800px) {
+            .gauges, .bay, .spec { grid-template-columns: 1fr; }
+            .stations { position: static; }
+            .mast { align-items: flex-start; flex-wrap: wrap; }
+            .mast nav { width: 100%; }
+            .endcap .btn { width: 100%; }
+            .readout { padding: 22px 16px 18px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header class="mast">
+            <a class="brand" href="index.html">
+                <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+                    <rect width="48" height="48" fill="#1a212b"/>
+                    <path d="M18 8h6v16l10 14h-7l-9-13V8z" fill="#d5dbe2"/>
+                    <path d="M24 24l10 14" fill="none" stroke="#f08a24" stroke-width="2"/>
+                    <path d="M16 40h8" stroke="#ffb15a" stroke-width="2"/>
+                </svg>
+                <span>
+                    <strong>Metal Stress</strong>
+                    <small>Shape-memory workshop</small>
+                </span>
+            </a>
+            <nav>
+                <a href="index.html">The workshop</a>
+                <a href="privacy.html" aria-current="page">Privacy</a>
+            </nav>
+        </header>
+
+        <main>
+            <header class="readout">
+                <p class="stamp">Workshop data sheet · Ads and usage</p>
+                <h1>What Metal Stress reports about data</h1>
+                <p class="deck">
+                    Metal Stress is a free bending puzzle: mounted strips, amber angle guides, and taps that stay in the metal. This sheet puts the App Store privacy label into plain language for players and guardians. It is a product notice. It is not a statute, and it is not advice from a lawyer. If the live label and this page ever part ways, follow the label until this sheet is replaced.
+                </p>
+                <dl class="gauges">
+                    <div>
+                        <dt>May track you</dt>
+                        <dd>Usage Data, across apps and sites owned by other companies</dd>
+                    </div>
+                    <div>
+                        <dt>Linked for third-party ads</dt>
+                        <dd>Usage Data and Advertising Data</dd>
+                    </div>
+                    <div>
+                        <dt>Download</dt>
+                        <dd>Free, and the listing says it contains advertising</dd>
+                    </div>
+                    <div>
+                        <dt>Age rating</dt>
+                        <dd>4+. Apple notes that practices can differ by age and by features used</dd>
+                    </div>
+                </dl>
+                <p class="issued">Sheet date · 27 October 2026</p>
+            </header>
+
+            <div class="bay">
+                <nav class="stations" aria-label="Sections">
+                    <a href="#edges">01 · Edges of this sheet</a>
+                    <a href="#bench">02 · On the device</a>
+                    <a href="#track">03 · Usage that can travel</a>
+                    <a href="#linked">04 · Tied to an identity</a>
+                    <a href="#ads">05 · Why ads are here</a>
+                    <a href="#forms">06 · No form on these pages</a>
+                    <a href="#store">07 · Store facts</a>
+                    <a href="#switches">08 · Device switches</a>
+                    <a href="#young">09 · Younger players</a>
+                    <a href="#ask">10 · Copies and deletion</a>
+                    <a href="#next">11 · The next sheet</a>
+                </nav>
+
+                <div>
+                    <section class="plate" id="edges">
+                        <p class="code">MS-01</p>
+                        <h2>Edges of this sheet</h2>
+                        <p>
+                            The sheet covers the Metal Stress app from the App Store, plus the English introduction beside it and this page. It does not describe a personal site, a mailing list, or any product other than the bending game.
+                        </p>
+                        <p>
+                            An Apple ID, a charge, Family Sharing, Screen Time, and a device backup belong to Apple. Those stay under Apple’s terms and Apple’s privacy policy.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="bench">
+                        <p class="code">MS-02</p>
+                        <h2>Bends that stay with the install</h2>
+                        <p>
+                            A round is taps on a mounted strip. The strip flexes, springs back, and holds part of the angle. Lives, a tap counter, and how far a phase has gone are there so the workshop can continue on that device. The App Store label does not file that play progress as one of its collected categories.
+                        </p>
+                        <p>
+                            The categories the label does file are Usage Data and Advertising Data, described below. Removing Metal Stress clears the app’s local storage. If an Apple backup is on, Apple may include app data under the backup choices already set. The listing does not describe a publisher sign-in or a cloud copy of finished bends.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="track">
+                        <p class="code">MS-03</p>
+                        <h2>Usage data that can travel</h2>
+                        <p>
+                            Apple’s privacy section for Metal Stress says Usage Data may be used to track you across apps and websites owned by other companies. In that label, tracking means the data is linked with third-party data for advertising, or shared with a data broker.
+                        </p>
+                        <p>
+                            That line sits next to third-party ads. It is not a claim that your tap sequences are posted on a public board. The tracking category named on the label is Usage Data. This sheet does not add health, contacts, precise location, photos, or financial details to that list.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="linked">
+                        <p class="code">MS-04</p>
+                        <h2>Data tied to an identity for ads</h2>
+                        <p>
+                            The same label says the following may be collected and linked to your identity, for third-party advertising:
+                        </p>
+                        <ul>
+                            <li>Usage Data — product interaction, in the grouping Apple uses for that heading.</li>
+                            <li>Advertising Data — ads served or advertising interactions, as Apple defines that category.</li>
+                        </ul>
+                        <p>
+                            Linked, here, means the publisher told Apple the data can be connected to an identity. That identity can be an advertising identifier on the device. Advertising partners use the two categories to choose, deliver, cap, and measure ads. The store listing does not offer a Metal Stress account, so this sheet does not describe a password, a saved card, or a profile page you edit.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="ads">
+                        <p class="code">MS-05</p>
+                        <h2>Ads around a free workshop</h2>
+                        <p>
+                            The download costs nothing. The rating block says Metal Stress contains advertising. Ads may show around a phase. They are separate from the amber guide and from the tap that sets a bend.
+                        </p>
+                        <p>
+                            Sellers authorized for that advertising are listed in the <a href="app-ads.txt">app-ads.txt</a> file published with these pages. The file names sellers. It does not catalog every ad you might see, and the names change when those selling relationships change.
+                        </p>
+                        <p class="warn">
+                            The privacy label filed with Apple is the disclosure that controls. This page restates it. When the two differ, trust the label on the store and expect this sheet to be rewritten.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="forms">
+                        <p class="code">MS-06</p>
+                        <h2>These pages collect no typed identity</h2>
+                        <p>
+                            The introduction and this sheet have no comment box, no mailing list, and no checkout. The store listing does not ask for an email address, phone number, legal name, contacts, camera, microphone, photo library, or precise location before a strip can be bent.
+                        </p>
+                        <p>
+                            Installing from the App Store does not grant a permission the game never requests. If a later build shows a system prompt, the prompt itself names the access. Read it before allowing it.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="store">
+                        <p class="code">MS-07</p>
+                        <h2>Facts printed on the listing</h2>
+                        <p>
+                            Language on the listing is English. The game is a casual puzzle, free, about 118.2 MB, rated 4+, and designed for iPad. It needs iOS 15 or later, and iPadOS 15 or later on iPad. iPod touch is on that same iOS requirement. Mac needs Apple silicon and macOS 12 or later, and that build is marked not verified for macOS. Apple Vision needs visionOS 1 or later.
+                        </p>
+                        <dl class="spec">
+                            <div>
+                                <dt>Category</dt>
+                                <dd>Casual puzzle</dd>
+                            </div>
+                            <div>
+                                <dt>Price</dt>
+                                <dd>Free</dd>
+                            </div>
+                            <div>
+                                <dt>Size</dt>
+                                <dd>118.2 MB</dd>
+                            </div>
+                            <div>
+                                <dt>Age</dt>
+                                <dd>4+</dd>
+                            </div>
+                        </dl>
+                        <p>
+                            Download, update, and refund paths run through Apple. Information Apple already holds about an Apple ID is not copied into a separate publisher file merely because the game is installed.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="switches">
+                        <p class="code">MS-08</p>
+                        <h2>Switches that live in Settings</h2>
+                        <p>
+                            When iOS asks about App Tracking Transparency, the answer controls whether the app may track you across other companies’ apps and websites. The choice can be changed later in Settings, under Privacy &amp; Security, then Tracking. Other system controls for ad personalization can further limit what an ad network is allowed to do on that device.
+                        </p>
+                        <p>
+                            Those switches are Apple’s. They do not remove ads from a game whose listing says it contains advertising. They change the tracking and personalization the system still permits.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="young">
+                        <p class="code">MS-09</p>
+                        <h2>Players at the 4+ rating</h2>
+                        <p>
+                            A parent or guardian decides whether the app is installed. Ask to Buy, Screen Time, and Family Sharing can hold that download or let it through.
+                        </p>
+                        <p>
+                            The listing still discloses advertising, usage data that may be used to track, and usage data plus advertising data linked for third-party advertising. Apple says privacy practices may vary, including with age. This sheet does not describe a separate child account inside the workshop. If you believe a child sent personal information to the publisher outside ordinary play, use support on the App Store listing and include only what is needed to locate the request.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="ask">
+                        <p class="code">MS-10</p>
+                        <h2>Copies, deletion, and how long data stays</h2>
+                        <p>
+                            Depending on where you live, you may have a right to access, correct, delete, or receive a copy of personal information, or to object to or limit certain advertising uses, including a sale or share for cross-context advertising. Send that request through the support options on the Metal Stress App Store page. Name the game, say the message is about privacy, and leave out details that are not needed.
+                        </p>
+                        <p>
+                            Some advertising data sits with the companies that serve the ads, not in a file the publisher can empty alone. The tracking switch in the section above is the practical control for cross-app tracking permission. This site has no personal email address and no street address for privacy mail.
+                        </p>
+                        <p>
+                            Usage data and advertising data are kept for the advertising purposes on the label, for measurement, and for legal duties that apply to the publisher or to an advertising partner. On-device progress remains until the app is deleted or its storage is cleared, aside from Apple backups you control.
+                        </p>
+                        <p>
+                            Advertising partners may process data in a country other than yours. Where a transfer rule requires a safeguard, that safeguard is the one the partner and the platform already use for delivering ads. This page does not name a private office abroad.
+                        </p>
+                    </section>
+
+                    <section class="plate" id="next">
+                        <p class="code">MS-11</p>
+                        <h2>When this readout is replaced</h2>
+                        <p>
+                            The date on the opening readout is the date of this wording. If a later build collects a new category, or changes whether data is used to track, the App Store privacy label should move with that build, and this page will be rewritten so the two match.
+                        </p>
+                        <p>
+                            Playing after a replacement sheet is posted means the new text was available here and, when Apple shows the link, on the privacy policy entry of the store listing.
+                        </p>
+                    </section>
+
+                    <div class="endcap">
+                        <p>The live listing, the privacy label, and product support for Metal Stress are on the App Store page.</p>
+                        <a class="btn" href="https://apps.apple.com/us/app/metal-stress/id6814805087?uo=4" target="_blank" rel="noopener noreferrer">Download on the App Store</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2026 Metal Stress. Data sheet for the bending puzzle.</p>
+            <p><a href="index.html">The workshop</a> · <a href="https://apps.apple.com/us/app/metal-stress/id6814805087?uo=4" target="_blank" rel="noopener noreferrer">App Store</a></p>
+        </footer>
+    </div>
+</body>
+</html>
